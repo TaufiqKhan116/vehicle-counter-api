@@ -3,6 +3,8 @@ from ultralytics import YOLO
 import subprocess
 import torch
 import os
+from PIL import Image, ImageDraw
+import random
 
 class ProcessVideoFile:
 
@@ -38,26 +40,14 @@ class ProcessVideoFile:
             0: 'bus',
             1: 'car',
             2: 'motorbike',
-            3: 'truck',
-            4: 'bicycle',
-            5: 'cng',
-            6: 'easy_bike',
-            7: 'leguna',
-            8: 'rickshaw',
-            9: 'van'
+            3: 'truck'
         }
 
         counter = {
             'bus':0,
             'car':0,
             'motorbike':0,
-            'truck':0,
-            'bicycle':0,
-            'cng':0,
-            'easy_bike':0,
-            'leguna':0,
-            'rickshaw':0,
-            'van':0
+            'truck':0
         }
 
         model = YOLO(model_weights_path)
@@ -67,6 +57,13 @@ class ProcessVideoFile:
         os.makedirs(processed_file_path, exist_ok=True)
         processed_file_full_path = os.path.join(processed_file_path, processed_file_name)
         intermediate__processed_file_full_path = os.path.join(processed_file_path, 'i_' + processed_file_name)
+
+        #image save
+        processed_file_root_image = processed_file_root + "images"
+        images_save_path_root = os.path.join(self.media_root, processed_file_root_image)
+        os.makedirs(images_save_path_root, exist_ok=True)
+        images_save_path_root = os.path.join(images_save_path_root, processed_file_name.split('.')[0])
+
         output_video = None
 
         prev_boxes = None
@@ -100,6 +97,13 @@ class ProcessVideoFile:
                 annotated_frame = results[0].plot()
 
                 output_video.write(annotated_frame)
+
+                if self.count % 5 != 0:
+                    save_path = images_save_path_root  + str(random.randint(10000, 99999))+".png"
+                    image = Image.fromarray(annotated_frame)
+                    image.save(save_path)
+
+
 
                 # Display the annotated frame
                 # cv2.imshow("YOLOv8 Tracking", annotated_frame)

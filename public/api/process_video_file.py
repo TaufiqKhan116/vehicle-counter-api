@@ -22,7 +22,7 @@ class ProcessVideoFile(View):
         
         full_file_path = self.use_cases.make_path_use_case.invoke(uploaded_file, 'videos')
         video_file = self.use_cases.save_file_use_case.invoke(full_file_path, uploaded_file)
-        video_file.success, video_file.processed_filepath, video_file.counter = self.use_cases.process_video_file_use_case.invoke('/home/taufiq/MyFolder/vehicle-counter-api/best.pt', video_file.saved_path, 'processed', video_file.file_name)
+        video_file.success, video_file.processed_filepath, video_file.counter = self.use_cases.process_video_file_use_case.invoke('D:\Projects/vehicle-counter-api/best_v.pt', video_file.saved_path, 'processed', video_file.file_name)
         video_file.processed_url = self.use_cases.make_url_use_case.invoke(request.scheme, request.get_host(), video_file.processed_filepath)
 
         return video_file.toJSON()
